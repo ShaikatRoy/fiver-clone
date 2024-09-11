@@ -41,15 +41,15 @@ const Register = () => {
         ...formInput,
         image: url,
       });
-      console.log(data);
+      
       toast.success("Registration successful!");
       setLoading(false);
       navigate("/login");
     } catch (error) {
       toast.error(error?.response?.data?.message ? error?.response?.data?.message : "Oops! Something went wrong.");
       // toast.error(error.data.message);
-      console.log(error);
-      console.log(error?.response?.data?.message);
+      // console.log(error);
+      // console.log(error?.response?.data?.message);
       setLoading(false);
     }
   };
