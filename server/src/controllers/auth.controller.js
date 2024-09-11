@@ -6,6 +6,8 @@ const satelize = require('satelize');
 const { JWT_SECRET, NODE_ENV } = process.env;
 const saltRounds = 10;
 
+
+
 const authRegister = async (request, response) => {
     const { username, email, phone, password, image, isSeller, description } = request.body;
     const list = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
@@ -13,23 +15,40 @@ const authRegister = async (request, response) => {
 
     try {
         const hash = bcrypt.hashSync(password, saltRounds);
-        const { country } = satelize.satelize({ ip: ips[0] }, (error, payload) => payload);
-        
-        const user = new User({
-            username,
-            email,
-            password: hash,
-            image,
-            country: country.en,
-            description,
-            isSeller,
-            phone
-        });
-        await user.save();
 
-        return response.status(201).send({
-            error: false,
-            message: 'New user created!'
+        // Fetch the country using satelize asynchronously
+        satelize.satelize({ ip: ips[0] }, async (error, payload) => {
+            if (error) {
+                console.error('Error fetching country:', error);
+                return response.status(500).send({
+                    error: true,
+                    message: 'Error fetching country from IP'
+                });
+            }
+
+            // Extract the country from the payload
+            const country = payload && payload.country ? payload.country : 'Unknown';  // Adjust based on payload structure
+
+          
+
+            // Proceed with creating the user only after receiving the country
+            const user = new User({
+                username,
+                email,
+                password: hash,
+                image,
+                country, 
+                description,
+                isSeller,
+                phone
+            });
+
+            await user.save();
+
+            return response.status(201).send({
+                error: false,
+                message: 'New user created!'
+            });
         });
     }
     catch({message}) {
