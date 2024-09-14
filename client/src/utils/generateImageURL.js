@@ -11,6 +11,8 @@ const generateImageURL = async (image) => {
     file
   );
 
+  console.log(data)
+
   return data;
 };
 

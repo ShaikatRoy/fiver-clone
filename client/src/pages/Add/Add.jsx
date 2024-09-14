@@ -76,6 +76,7 @@ const Add = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
+    console.log(state)
     const form = {...state, userID: user._id}
     for(let key in form) {
       if(form[key] === '' || form[key].length === 0) {

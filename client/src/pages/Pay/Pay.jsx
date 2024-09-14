@@ -16,6 +16,7 @@ const Pay = () => {
     ( async () => {
       try {
         const { data } = await axiosFetch.post(`/orders/create-payment-intent/${_id}`);
+
         setClientSecret(data.clientSecret);
       }
       catch({response}) {

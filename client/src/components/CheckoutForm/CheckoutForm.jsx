@@ -44,6 +44,7 @@ const CheckoutForm = () => {
     });
   }, [stripe]);
 
+ 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -77,6 +78,7 @@ const CheckoutForm = () => {
     setIsLoading(false);
   }
 
+
   const paymentElementOptions = {
     layout: "tabs"
   }
@@ -90,7 +92,7 @@ const CheckoutForm = () => {
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <button disabled={isLoading || !stripe || !elements} id="submit">
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          {isLoading ? "Paying..." : "Pay now"}
         </span>
       </button>
       {/* Show any error or success messages */}
