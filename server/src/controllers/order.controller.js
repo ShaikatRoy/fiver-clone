@@ -1,4 +1,4 @@
-const { Order, Gig } = require('../models');
+const { Order, Gig, User } = require('../models');
 const { CustomException } = require('../utils');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
@@ -20,13 +20,24 @@ const paymentIntent = async (request, response) => {
 
     try {
         const gig = await Gig.findOne({ _id });
+        const customerInformation = await User.findById({_id: gig?.userID})
 
         const payment_intent = await stripe.paymentIntents.create({
             amount: gig.price * 100,
-            currency: "INR",
+            currency: "inr",
+            description: gig.shortDesc,
             automatic_payment_methods: {
                 enabled: true,
             },
+            shipping: {
+                name: customerInformation?.username,          // Pass the customer's name
+                address: {
+                  line1: 'Address Line 1',   // Address fields
+                  city: 'City',
+                  postal_code: 'IN',
+                  country: "IN",             // Country code (India in this case)
+                },
+              },
         });
 
         const order = new Order({
